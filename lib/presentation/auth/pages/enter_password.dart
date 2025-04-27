@@ -5,35 +5,31 @@ import 'package:ecommerce/presentation/auth/pages/forgot_password.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-
 class EnterPasswordPage extends StatelessWidget {
-  EnterPasswordPage({
-    super.key
-  });
+  EnterPasswordPage({super.key});
 
   final TextEditingController _passwordCon = TextEditingController();
-
+  final _paswordKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const BasicAppbar(),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 40
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _siginText(context),
+              const SizedBox(height: 20),
+              _passwordField(context),
+              const SizedBox(height: 20),
+              _continueButton(context),
+              const SizedBox(height: 20),
+              _forgotPassword(context),
+            ],
+          ),
         ),
-        child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _siginText(context),
-                const SizedBox(height: 20,),
-                _passwordField(context),
-                const SizedBox(height: 20,),
-                _continueButton(context),
-                const SizedBox(height: 20,),
-                _forgotPassword(context)
-              ],
-            ),
       ),
     );
   }
@@ -41,18 +37,22 @@ class EnterPasswordPage extends StatelessWidget {
   Widget _siginText(BuildContext context) {
     return const Text(
       'Sign in',
-      style: TextStyle(
-        fontSize: 32,
-        fontWeight: FontWeight.bold
-      ),
+      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
     );
   }
 
   Widget _passwordField(BuildContext context) {
-    return TextField(
-      controller: _passwordCon,
-      decoration: const InputDecoration(
-        hintText: 'Enter Password'
+    return Form(
+      key: _paswordKey,
+      child: TextFormField(
+        controller: _passwordCon,
+        decoration: const InputDecoration(hintText: 'Enter Password'),
+        validator: (value) {
+          if (value!.length <= 5) {
+            return "password must be more than 5 characters";
+          }
+          return null;
+        },
       ),
     );
   }
@@ -61,33 +61,30 @@ class EnterPasswordPage extends StatelessWidget {
     return Builder(
       builder: (context) {
         return BasicAppButton(
-          onPressed: (){
-            
+          onPressed: () {
+            if (_paswordKey.currentState!.validate()) {}
           },
-          title: 'Continue'
+          title: 'Continue',
         );
-      }
+      },
     );
   }
 
   Widget _forgotPassword(BuildContext context) {
     return RichText(
       text: TextSpan(
-        children:  [
-          const TextSpan(
-            text: "Forgot password? "
-          ),
-           TextSpan(
+        children: [
+          const TextSpan(text: "Forgot password? "),
+          TextSpan(
             text: 'Reset',
-            recognizer:TapGestureRecognizer()..onTap = () {
-              AppNavigator.push(context, ForgotPasswordPage());
-            } ,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold
-            )
-          )
-        ]
-
+            recognizer:
+                TapGestureRecognizer()
+                  ..onTap = () {
+                    AppNavigator.push(context, ForgotPasswordPage());
+                  },
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
